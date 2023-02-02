@@ -50,12 +50,12 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
         user.setRole(Roles.USER);
         userRepository.save(user);
+
         return "User registered successfully";
     }
 
     @Override
     public String login(LoginDto loginDto) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsernameOrEmail(),

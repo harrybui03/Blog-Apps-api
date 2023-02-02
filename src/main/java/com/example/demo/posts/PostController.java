@@ -21,8 +21,8 @@ public class PostController {
     FileService fileService;
 
     @PostMapping()
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
-        return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED) ;
+    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto , @RequestHeader("Authorization") String token){
+        return new ResponseEntity<>(postService.createPost(postDto , token), HttpStatus.CREATED) ;
     }
 
     @PostMapping("/upload/{postId}")

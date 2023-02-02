@@ -36,7 +36,6 @@ public class AuthController {
     //signup
     @PostMapping(value = {"/signup"})
     public ResponseEntity<String> register(@RequestBody SignupDto signupDto){
-        System.out.println(signupDto);
         String token = authService.signup(signupDto);
         return new ResponseEntity<>(token , HttpStatus.CREATED);
     }

@@ -2,6 +2,7 @@ package com.example.demo.tags;
 
 import com.example.demo.posts.Post;
 import com.example.demo.uploadFile.FileUpload;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class Tag {
     @Column(unique=false)
     private Date create_at;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Post> posts;
 

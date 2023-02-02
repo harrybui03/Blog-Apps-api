@@ -4,6 +4,7 @@ import com.example.demo.comments.Comment;
 import com.example.demo.tags.Tag;
 import com.example.demo.uploadFile.FileUpload;
 import com.example.demo.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -45,6 +46,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

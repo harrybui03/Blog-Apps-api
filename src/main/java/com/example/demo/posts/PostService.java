@@ -4,7 +4,7 @@ package com.example.demo.posts ;
 import java.util.List;
 
 public interface PostService {
-    PostDto createPost(PostDto postDto);
+    PostDto createPost(PostDto postDto , String token);
 
     PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir);
 

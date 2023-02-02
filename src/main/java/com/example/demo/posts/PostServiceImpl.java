@@ -2,8 +2,11 @@ package com.example.demo.posts ;
 
 
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.tags.Tag;
 import com.example.demo.tags.TagRepository;
+import com.example.demo.users.User;
+import com.example.demo.users.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,20 +22,28 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
-    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper,TagRepository tagRepository) {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper, TagRepository tagRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
         this.postRepository = postRepository;
         this.mapper = mapper;
         this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
     @Override
-    public PostDto createPost(PostDto postDto) {
+    public PostDto createPost(PostDto postDto , String token) {
         Tag tag =  tagRepository.findById(postDto.getTagId()).orElseThrow(() -> new ResourceNotFoundException("Tag" , "id" , postDto.getTagId()));
         Post post = mapToEntity(postDto);
         post.setTag(tag);
+        String username = jwtTokenProvider.getUsername(token);
+        User author = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User" , "username" , username));
+        post.setAuthor(author);
         Post newPost = postRepository.save(post);
         PostDto postResponse = mapToDTO(newPost);
         return postResponse;
