@@ -3,7 +3,6 @@ package com.example.demo.uploadFile.impl;
 import com.example.demo.exception.FileStorageException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.posts.Post;
-import com.example.demo.posts.PostDto;
 import com.example.demo.posts.PostRepository;
 import com.example.demo.uploadFile.FileRepository;
 import com.example.demo.uploadFile.FileService;

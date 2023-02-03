@@ -1,5 +1,7 @@
 package com.example.demo.tags;
 
+import com.example.demo.tags.dto.TagDto;
+
 import java.util.List;
 
 public interface TagService {

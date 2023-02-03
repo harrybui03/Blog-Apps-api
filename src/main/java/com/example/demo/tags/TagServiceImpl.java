@@ -1,6 +1,7 @@
 package com.example.demo.tags;
 
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.tags.dto.TagDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

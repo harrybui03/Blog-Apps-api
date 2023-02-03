@@ -1,8 +1,9 @@
 package com.example.demo.posts ;
 
 
+import com.example.demo.exception.BlogAPIException;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.security.JwtTokenProvider;
+import com.example.demo.posts.dto.PostDto;
 import com.example.demo.tags.Tag;
 import com.example.demo.tags.TagRepository;
 import com.example.demo.users.User;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,23 +27,18 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final ModelMapper mapper;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper, TagRepository tagRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public PostServiceImpl(PostRepository postRepository, TagRepository tagRepository, UserRepository userRepository, ModelMapper mapper) {
         this.postRepository = postRepository;
-        this.mapper = mapper;
         this.tagRepository = tagRepository;
         this.userRepository = userRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.mapper = mapper;
     }
 
-
     @Override
-    public PostDto createPost(PostDto postDto , String token) {
+    public PostDto createPost(PostDto postDto , String username) {
         Tag tag =  tagRepository.findById(postDto.getTagId()).orElseThrow(() -> new ResourceNotFoundException("Tag" , "id" , postDto.getTagId()));
         Post post = mapToEntity(postDto);
         post.setTag(tag);
-        String username = jwtTokenProvider.getUsername(token);
         User author = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User" , "username" , username));
         post.setAuthor(author);
         Post newPost = postRepository.save(post);
@@ -83,8 +80,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto updatePost(long id,PostDto postDto) {
+    public PostDto updatePost(long id, PostDto postDto, String name) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new ResourceNotFoundException("User" , "username" , name));
+        if(post.getAuthor().getId() != user.getId()){
+            throw new BlogAPIException("You are not authorized to update this post", HttpStatus.UNAUTHORIZED);
+        }
         Tag tag = tagRepository.findById(postDto.getTagId()).orElseThrow(() -> new ResourceNotFoundException("Tag" , "id", id));
         post = mapToEntity(postDto);
         post.setTag(tag);
@@ -93,8 +95,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(long id) {
+    public void deletePostById(long id, String name) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new ResourceNotFoundException("User" , "username" , name));
+        if(post.getAuthor().getId() != user.getId() && !user.getRole() .equals("ADMIN")){
+            throw new BlogAPIException("You are not authorized to delete this post", HttpStatus.UNAUTHORIZED);
+        }
         postRepository.delete(post);
     }
 

@@ -1,5 +1,6 @@
-package com.example.demo.users;
+package com.example.demo.users.dto;
 
+import com.example.demo.users.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

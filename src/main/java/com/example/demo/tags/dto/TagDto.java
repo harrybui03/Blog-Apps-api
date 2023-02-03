@@ -1,4 +1,4 @@
-package com.example.demo.tags;
+package com.example.demo.tags.dto;
 
 import com.example.demo.posts.Post;
 import lombok.Data;

@@ -1,9 +1,10 @@
 package com.example.demo.tags;
 
+import com.example.demo.tags.dto.TagDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class TagController {
     TagService tagService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<TagDto> createTag(@RequestBody TagDto tagDto){
         return new ResponseEntity<>(tagService.createTag(tagDto) , HttpStatus.CREATED) ;
     }
@@ -32,11 +34,14 @@ public class TagController {
     }
 
     @PutMapping("/{tagId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+
     public ResponseEntity<TagDto> updateTag(@RequestBody TagDto tagDto , @PathVariable("tagId") Long tagId){
         return new ResponseEntity<>(tagService.updateTag(tagDto , tagId) , HttpStatus.OK);
     }
 
     @DeleteMapping("/{tagId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> deleteTag(@PathVariable("tagId") Long tagId){
         tagService.deleteTag(tagId);
         return new ResponseEntity<>("Tag is deleted successfully" , HttpStatus.OK);

@@ -1,5 +1,6 @@
 package com.example.demo.posts;
 
+import com.example.demo.posts.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

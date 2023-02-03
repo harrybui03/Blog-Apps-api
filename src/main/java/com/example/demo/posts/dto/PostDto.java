@@ -1,9 +1,6 @@
-package com.example.demo.posts ;
+package com.example.demo.posts.dto;
 
-import com.example.demo.tags.Tag;
-import com.example.demo.tags.TagDto;
 import com.example.demo.uploadFile.FileDTO;
-import com.example.demo.uploadFile.FileUpload;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;

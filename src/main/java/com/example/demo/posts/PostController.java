@@ -1,11 +1,13 @@
 package com.example.demo.posts ;
 
+import com.example.demo.posts.dto.PostDto;
 import com.example.demo.uploadFile.FileService;
 import com.example.demo.uploadFile.FileDTO;
 import com.example.demo.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +23,8 @@ public class PostController {
     FileService fileService;
 
     @PostMapping()
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto , @RequestHeader("Authorization") String token){
-        return new ResponseEntity<>(postService.createPost(postDto , token), HttpStatus.CREATED) ;
+    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto , Authentication authentication){
+        return new ResponseEntity<>(postService.createPost(postDto , authentication.getName()), HttpStatus.CREATED) ;
     }
 
     @PostMapping("/upload/{postId}")
@@ -46,13 +48,13 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable(name = "postId") long postId , @RequestBody PostDto postDto){
-        return new ResponseEntity<>(postService.updatePost(postId,postDto), HttpStatus.OK);
+    public ResponseEntity<PostDto> updatePost(@PathVariable(name = "postId") long postId , @RequestBody PostDto postDto , Authentication authentication){
+        return new ResponseEntity<>(postService.updatePost(postId,postDto , authentication.getName()), HttpStatus.OK);
     }
 
     @DeleteMapping(("/{postId}"))
-    public ResponseEntity<String> deletePost(@PathVariable(name = "postId") long postId){
-        postService.deletePostById(postId);
+    public ResponseEntity<String> deletePost(@PathVariable(name = "postId") long postId , Authentication authentication){
+        postService.deletePostById(postId , authentication.getName());
         return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 
